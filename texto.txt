@@ -1,0 +1,25 @@
+Error-based SQLi
+Navega a http://127.0.0.1:5000/user_info?id=1.
+Intenta inyectar una consulta SQL para causar un error, por ejemplo:
+http://127.0.0.1:5000/user_info?id=1'
+Si se devuelve un mensaje de error detallado, esto puede ser explotado para obtener información sobre la base de datos.
+
+Union-based SQLi
+Navega a http://127.0.0.1:5000/search?query=test.
+Intenta inyectar una consulta SQL con UNION, por ejemplo:
+http://127.0.0.1:5000/search?query=test' UNION SELECT 1, version() --
+Esto debería devolver información sobre la versión de la base de datos si la inyección tiene éxito.
+
+Boolean-based Blind SQLi
+Navega a http://127.0.0.1:5000/exists?username=admin.
+Intenta inyectar una consulta SQL para inferir la existencia de un usuario, por ejemplo:
+http://127.0.0.1:5000/exists?username=admin' AND '1'='1
+http://127.0.0.1:5000/exists?username=admin' AND '1'='2
+Si la primera consulta devuelve "User exists" y la segunda "User does not exist", puedes confirmar que la inyección es efectiva.
+
+Mejoras de Seguridad
+Para mitigar estas vulnerabilidades, asegúrate de:
+
+Usar consultas parametrizadas para todas las consultas SQL.
+No devolver mensajes de error detallados al usuario final. Maneja los errores de manera segura y registra los detalles en un log seguro.
+Implementar validación de entrada y sanitización para todas las entradas de usuario.

